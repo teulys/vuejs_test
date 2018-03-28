@@ -1,0 +1,68 @@
+<html>
+    <title>VueJS Test</title>
+    <head>
+        <!-- development version, includes helpful console warnings -->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    </head>
+    <body>
+        <div id="app">
+            {{ date }}
+            <br/>
+            <input v-model="message"/> <br/>
+            {{ message }} 
+            <br/>
+            <button v-on:click="reverseMessage">Reverse text</button>
+
+            <ul>
+                <li v-for="food in items">{{ food }}</li>
+            </ul>
+
+            <br/>
+            <input type="checkbox" v-model="seem"/>Click to see<br/>
+            <span v-if="seem">Now you see me</span> 
+
+            <br/>
+            <ol>
+                <li v-for="todo in todos">
+                  {{ todo.text }}
+                </li>
+            </ol>
+            <br/>
+            <div>
+                <button-counter></button-counter>
+            </div>
+        </div>
+
+        <script>
+            Vue.component('button-counter', {
+                data: function () {
+                    return {
+                    count: 0
+                    }
+                },
+                template: '<button v-on:click="count++">You clicked me {{ count }} times.</button>'
+            })
+        </script>
+        <script>
+            new Vue({
+                el: '#app',
+                data : {
+                    message : 'Hello Vue!',
+                    date: new Date().toLocaleString(),
+                    items : ['arroz','habichuela','carne'],
+                    seem : true,
+                    todos: [
+                        { text: 'Learn JavaScript' },
+                        { text: 'Learn Vue' },
+                        { text: 'Build something awesome' }
+                    ]
+                },
+                methods : {
+                    reverseMessage : function(){
+                        this.message = this.message.split('').reverse().join('');
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
