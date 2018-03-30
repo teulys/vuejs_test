@@ -1,0 +1,100 @@
+<html>
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+<title>Testing VueJs</title>
+
+<body>
+    <div id="app">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <template v-if="name">
+                    <h1 v-show="name">{{ genero == 'm' ? 'Bienvenido' : 'Bienvenida' }} , {{ name }}</h1>
+                    <p>Tu nombre invertido: {{ name.split('').reverse().join('') }}</p>
+                </template>
+                <p v-else>Por favor escriba su nombre:</p>
+                <input type="text" v-model="name" class="form-control" />
+                <br/>
+
+                <hr>
+
+                <form>
+                    <label>
+                        Hombre: <input type="radio" v-model="genero" value="m" />    
+                    </label>
+
+                    <label>
+                        Mujer: <input type="radio" v-model="genero" value="f" />    
+                    </label>
+
+                    <p v-show="name">
+                        <button type="submit" class="btn btn-primary" v-on:click.prevent="singUp">
+                            Registrate
+                        </button>
+                    </p>
+
+                    <hr>
+                    <p>Cuantos años de experiencia tiene en PHP?</p>
+                    <hr>
+
+                    <p>Respuesta: {{ year_php }}</p>
+                    <!-- v-bind == : -->
+                    <button :class="{'btn btn-info' : true, 'btn btn-danger': year_php > 10}" :style="{'font-size': 10+year_php+'px'}" type="button" @click="addYears">+</button>
+                    <button class="btn btn-info" type="button" v-bind:disabled="year_php == 0" @click="remYears">-</button>
+
+                    <hr>
+                    <hr>
+                    <p>Cuantos años de experiencia tiene en Java?</p>
+                    <hr>
+
+                    <p>Respuesta: {{ year_php }}</p>
+                    <button :class="{'btn btn-info' : true, 'btn btn-danger': year_java > 10}" :style="getFontStyle()" type="button" @click="year_java++">+</button>
+                    <button class="btn btn-info" type="button" v-bind:disabled="year_java == 0" @click="year_java--">-</button>
+
+                </form>
+                <pre>{{ $data | json }}</pre>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            name: "Teulys",
+            genero: 'm',
+            year_php: 0,
+            year_java: 0
+        },
+        methods: {
+            singUp: function() {
+                alert("Ha iniciado sesion");
+            },
+
+            addYears: function() {
+                this.year_php++;
+            },
+
+            remYears: function() {
+                if (this.year_php > 0)
+                    this.year_php--;
+            },
+
+            getFontStyle: function() {
+                return 'font-size:' + (10 + this.year_java) + 'px';
+            }
+        }
+    });
+</script>
+
+</html>
