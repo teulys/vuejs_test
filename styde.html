@@ -1,28 +1,31 @@
 <html>
 
 <head>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <title>Styde.net | Curso de VueJS</title>
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <script src="vue.js"></script>
 </head>
-<title>Testing VueJs</title>
 
 <body>
     <div id="app">
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
                 <template v-if="name">
-                    <h1 v-show="name">{{ genero == 'm' ? 'Bienvenido' : 'Bienvenida' }} , {{ name }}</h1>
+                    <h1 v-show="name">{{ welcome_message }} , {{ name }}</h1>
                     <p>Tu nombre invertido: {{ name.split('').reverse().join('') }}</p>
                 </template>
                 <p v-else>Por favor escriba su nombre:</p>
-                <input type="text" v-model="name" class="form-control" />
+
+                <label>Nombre:</label>
+                <input type="text" v-model="first_name" class="form-control" />
+                <label>Apellido</label>
+                <input type="text" v-model="last_name" class="form-control" />
                 <br/>
 
                 <hr>
@@ -42,39 +45,81 @@
                         </button>
                     </p>
 
-                    <hr>
-                    <p>Cuantos años de experiencia tiene en PHP?</p>
-                    <hr>
+                    <template v-for="t in tech">
+                        <year-exp :tech="t.name" :year.sync="t.year"></year-exp>
+                    </template>
 
-                    <p>Respuesta: {{ year_php }}</p>
-                    <!-- v-bind == : -->
-                    <button :class="{'btn btn-info' : true, 'btn btn-danger': year_php > 10}" :style="{'font-size': 10+year_php+'px'}" type="button" @click="addYears">+</button>
-                    <button class="btn btn-info" type="button" v-bind:disabled="year_php == 0" @click="remYears">-</button>
+                    <select class="form-control" v-model="techSelected">
+                        <option v-for="tech in techNames" :value="tech" >{{ tech }}</option>
+                    </select>
 
-                    <hr>
-                    <hr>
-                    <p>Cuantos años de experiencia tiene en Java?</p>
-                    <hr>
-
-                    <p>Respuesta: {{ year_php }}</p>
-                    <button :class="{'btn btn-info' : true, 'btn btn-danger': year_java > 10}" :style="getFontStyle()" type="button" @click="year_java++">+</button>
-                    <button class="btn btn-info" type="button" v-bind:disabled="year_java == 0" @click="year_java--">-</button>
-
+                    <pre>{{ $data | json }}</pre>
                 </form>
-                <pre>{{ $data | json }}</pre>
             </div>
         </div>
     </div>
     </div>
 </body>
+
+<script type="text/template" id="temp-exp">
+    <div>
+        <hr>
+        <p>Cuantos años de experiencia tiene en {{ tech }}?</p>
+
+        <p>Respuesta: <strong>{{ year }} </strong> </p>
+
+        <button :class="{'btn btn-info' : true, 'btn btn-danger': year > 10}" :style="{'font-size': 10+year+'px'}" type="button" @click="add">+</button>
+        <button class="btn btn-info" type="button" v-bind:disabled="year == 0" @click="rem">-</button>
+        <br/>
+    </div>
+</script>
+
 <script>
+    Vue.component('year-exp', {
+        template: '#temp-exp',
+        props: ['year', 'tech'],
+        methods: {
+            add: function() {
+                this.year++;
+            },
+            rem: function() {
+                if (this.year > 0)
+                    this.year--;
+            }
+        }
+    })
+
     new Vue({
         el: '#app',
         data: {
-            name: "Teulys",
+            //name: "Teulys",
             genero: 'm',
-            year_php: 0,
-            year_java: 0
+            tech: [{
+                name: 'PHP',
+                year: 0
+            }, {
+                name: 'JAVA',
+                year: 0
+            }, {
+                name: 'JS',
+                year: 0
+            }],
+            techNames: ['PHP', 'Java', 'C#', 'JS', 'C++', 'C', 'Delphi'],
+            year: 0,
+            techSelected: 'PHP',
+            first_name: '',
+            last_name: ''
+        },
+        computed: {
+            welcome_message: function() {
+                return this.genero == 'm' ? 'Bienvenido' : 'Bienvenida';
+            },
+            name: function() {
+                if (this.first_name || this.last_name)
+                    return this.first_name + ' ' + this.last_name;
+
+                return '';
+            }
         },
         methods: {
             singUp: function() {
@@ -92,6 +137,14 @@
 
             getFontStyle: function() {
                 return 'font-size:' + (10 + this.year_java) + 'px';
+            },
+
+            addTech: function(tech, y) {
+                t = {
+                    name: tech,
+                    year: y
+                };
+                this.tech.push(t);
             }
         }
     });
